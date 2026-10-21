@@ -1,7 +1,7 @@
-darbiadev-ups
+tailstory-ups
 =============
 
-A wrapper for UPS' API
+UPS API SDK
 
 Module Index
 ------------

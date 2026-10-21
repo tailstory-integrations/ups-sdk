@@ -1,4 +1,4 @@
-name: Python CI
+name: CI
 
 on:
   push:
@@ -6,33 +6,57 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  pre-commit:
-    uses: darbiadev/.github/.github/workflows/generic-precommit.yaml@41518576ed6c499ed3e68d5cbceaeaa50abd471a # v14.1.0
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-  lint:
-    needs: pre-commit
-    uses: darbiadev/.github/.github/workflows/python-lint.yaml@41518576ed6c499ed3e68d5cbceaeaa50abd471a # v14.1.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
 
-  test:
-    needs: lint
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ "3.9", "3.10", "3.11" ]
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: "pyproject.toml"
 
-    uses: darbiadev/.github/.github/workflows/python-test.yaml@41518576ed6c499ed3e68d5cbceaeaa50abd471a # v14.1.0
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
-    secrets:
-      codecov-token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Sync dependencies
+        run: uv sync --group dev --group tests
 
-  docs:
-    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
+      - name: Run pre-commit
+        run: uv run pre-commit run --all-files
 
-    uses: darbiadev/.github/.github/workflows/github-pages-python-sphinx.yaml@41518576ed6c499ed3e68d5cbceaeaa50abd471a # v14.1.0
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Run Ruff checks
+        run: uv run ruff check --output-format=github .
+
+      - name: Run mypy
+        run: uv run mypy --strict src/ tests/
+
+      - name: Run tests
+        run: uv run python -m coverage run -m pytest -v --junitxml=junit.xml
+
+      - name: Create coverage report
+        run: uv run coverage xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          use_oidc: true
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
+        with:
+          use_oidc: true

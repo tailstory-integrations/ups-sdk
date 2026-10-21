@@ -6,12 +6,12 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 from importlib.metadata import metadata
 
-project_metadata = metadata("darbiadev-ups")
+project_metadata = metadata("tailstory-ups")
 project: str = project_metadata["Name"]
 release: str = project_metadata["Version"]
 REPO_LINK: str = project_metadata["Project-URL"].replace("repository, ", "")
-copyright: str = "Darbia, 2023"  # noqa: A001
-author: str = "Bradley Reynolds"
+copyright: str = "Tailstory"  # noqa: A001
+author: str = "Tailstory team"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom
@@ -53,16 +53,16 @@ releases_github_path = REPO_LINK.removeprefix("https://github.com/")
 releases_release_uri = f"{REPO_LINK}/releases/tag/v%s"
 
 
-def linkcode_resolve(domain: str, info: dict) -> str:
+def linkcode_resolve(domain: str, info: dict) -> str | None:
     """linkcode_resolve."""
     if domain != "py":
         return None
     if not info["module"]:
         return None
 
-    import importlib
-    import inspect
-    import types
+    import importlib  # noqa: PLC0415
+    import inspect  # noqa: PLC0415
+    import types  # noqa: PLC0415
 
     mod = importlib.import_module(info["module"])
 
@@ -87,7 +87,7 @@ def linkcode_resolve(domain: str, info: dict) -> str:
             lines, first = inspect.getsourcelines(val)
             last = first + len(lines) - 1
             filename += f"#L{first}-L{last}"
-        except (OSError, TypeError):
+        except OSError, TypeError:
             pass
 
     return f"{REPO_LINK}/blob/main/src/{filename}"
