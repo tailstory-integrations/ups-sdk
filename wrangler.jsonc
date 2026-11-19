@@ -1,0 +1,17 @@
+{
+  "name": "ups-sdk-docs",
+  "compatibility_date": "2026-11-18",
+  "build": {
+    "command": "uv run --locked --group docs sphinx-build --builder dirhtml --nitpicky docs site"
+  },
+  "assets": {
+    "directory": "./site",
+    "base_path": "/ups-sdk"
+  },
+  "routes": [
+    { "pattern": "docs.tailstory.dev/ups-sdk", "zone_name": "tailstory.dev" },
+    { "pattern": "docs.tailstory.dev/ups-sdk/*", "zone_name": "tailstory.dev" }
+  ],
+  "workers_dev": false,
+  "previews": {}
+}
