@@ -12,6 +12,7 @@ nox.options.sessions = ["lints"]
 CLEANABLE_TARGETS = [
     "./dist",
     "./build",
+    "./site",
     "./.nox",
     "./.coverage",
     "./.coverage.*",
