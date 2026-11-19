@@ -10,3 +10,6 @@ coverage.xml
 
 # Docs
 site/
+
+# Wrangler
+.wrangler/
