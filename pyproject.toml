@@ -6,7 +6,8 @@ authors = [
     { name = "Bradley Reynolds", email = "bradley.reynolds@tailstory.dev" },
 ]
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 requires-python = ">=3.14"
 dependencies = ["pydantic>=2.12.0", "niquests>=3.19.1"]
 
