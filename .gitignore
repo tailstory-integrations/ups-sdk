@@ -1,9 +1,12 @@
 # Packaging
-*.egg-info
 dist
 
 # Cache
 __pycache__
+
+# Coverage
+.coverage
+coverage.xml
 
 # Docs
 docs/build
