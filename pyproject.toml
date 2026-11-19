@@ -24,6 +24,7 @@ dev = [
     "prek>=0.4.11",
     "ruff>=0.16.0",
     "mypy>=2.3.0",
+    "ty>=0.0.101",
 ]
 docs = [
     "sphinx>=7.4.4",
@@ -49,10 +50,12 @@ module-name = "ups_sdk"
 [tool.ruff]
 target-version = "py314"
 line-length = 120
+cache-dir = ".cache/ruff"
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+    "COM812", # (Trailing comma missing) - The formatter owns trailing commas
     "CPY001", # (Missing copyright notice at top of file) - No license
 ]
 
@@ -73,9 +76,12 @@ convention = "numpy"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
+cache_dir = ".cache/mypy"
 
 [tool.coverage.run]
 source = ["ups_sdk"]
+data_file = ".cache/coverage/.coverage"
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers"
+cache_dir = ".cache/pytest"

@@ -1,6 +1,6 @@
 """Tests for reading UPS's records."""
 
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 import pytest
 
@@ -38,7 +38,7 @@ def test_a_positive_offset_is_read() -> None:
 
     assert activity.occurred_at is not None
     assert activity.occurred_at.utcoffset() is not None
-    assert activity.occurred_at.utcoffset().total_seconds() == 5.5 * 3600  # type: ignore[union-attr]
+    assert activity.occurred_at.utcoffset() == timedelta(hours=5, minutes=30)
 
 
 def test_dates_and_times_read_from_python_values_too() -> None:

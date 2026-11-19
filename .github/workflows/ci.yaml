@@ -40,6 +40,9 @@ jobs:
       - name: Run mypy
         run: uv run mypy --strict src/ tests/
 
+      - name: Run ty
+        run: uv run ty check --output-format=github .
+
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -62,7 +65,7 @@ jobs:
         run: uv sync --locked --group tests
 
       - name: Run tests
-        run: uv run coverage run -m pytest
+        run: uv run python -m coverage run -m pytest -v
 
       - name: Create coverage report
         run: uv run coverage xml
