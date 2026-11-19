@@ -11,15 +11,9 @@ nox.options.sessions = ["lints"]
 
 CLEANABLE_TARGETS = [
     "./dist",
-    "./build",
     "./site",
-    "./.nox",
-    "./.coverage",
-    "./.coverage.*",
-    "./coverage.json",
-    "./**/.ruff_cache",
-    "./**/.mypy_cache",
-    "./**/.pytest_cache",
+    "./.cache",
+    "./coverage.xml",
     "./**/__pycache__",
     "./**/*.pyc",
     "./**/*.pyo",
@@ -29,7 +23,7 @@ CLEANABLE_TARGETS = [
 @nox.session
 def tests(session: nox.Session) -> None:
     """Run tests."""
-    session.run("pytest")
+    session.run("python", "-m", "coverage", "run", "-m", "pytest", "-v")
 
 
 @nox.session
@@ -39,6 +33,13 @@ def lints(session: nox.Session) -> None:
     session.run("ruff", "format", ".")
     session.run("ruff", "check", "--fix", ".")
     session.run("mypy", "--strict", "src/", "tests/")
+    session.run("ty", "check", ".")
+
+
+@nox.session
+def docs(session: nox.Session) -> None:
+    """Build the documentation (needs the ``docs`` dependency group)."""
+    session.run("sphinx-build", "--builder", "dirhtml", "--nitpicky", "docs", "site")
 
 
 @nox.session
