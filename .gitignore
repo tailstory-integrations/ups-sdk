@@ -9,4 +9,4 @@ __pycache__
 coverage.xml
 
 # Docs
-docs/build
+docs/_build
