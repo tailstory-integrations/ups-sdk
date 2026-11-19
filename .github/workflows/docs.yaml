@@ -11,10 +11,8 @@ permissions: {}
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -24,20 +22,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
+          version: "latest-known"
           enable-cache: true
 
-      - name: Setup Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version-file: "pyproject.toml"
-
       - name: Sync dependencies
-        run: uv sync --group docs
+        run: uv sync --locked --group docs
 
       - name: Build docs
-        run: |
-          cd docs
-          uv run sphinx-build --builder dirhtml --nitpicky source build
+        run: uv run sphinx-build --builder dirhtml --nitpicky docs/source docs/build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -46,19 +38,14 @@ jobs:
 
   deploy:
     if: ${{ github.ref == 'refs/heads/main' }}
-
+    runs-on: ubuntu-latest
+    needs: build
     permissions:
-      contents: read
       pages: write
       id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
