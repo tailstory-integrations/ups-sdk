@@ -30,4 +30,3 @@ jobs:
 
       - name: Build docs
         run: uv run sphinx-build --builder dirhtml --nitpicky docs site
-
